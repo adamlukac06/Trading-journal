@@ -3,13 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Journal</title>
+    <title>My Trading Journal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="journal-container">
+        <img id="logo" src="QCpurpbsee.png" alt="Logo">
         <div id="local-time" style="text-align: center;"></div>
-        <textarea id="journal-entry" placeholder="What's on your mind today?"></textarea>
+        <input type="text" id="symbol-name" placeholder="Symbol Name">
+        <input type="datetime-local" id="entry-time">
+        <input type="datetime-local" id="exit-time">
+        <input type="number" id="entry-price" placeholder="Entry Price">
+        <input type="number" id="exit-price" placeholder="Exit Price">
+        <select id="side">
+            <option value="long">Long</option>
+            <option value="short">Short</option>
+        </select>
+        <textarea id="question-1" placeholder="How did you feel during this trade?"></textarea>
+        <textarea id="question-2" placeholder="What strategy did you use? Did it change from your previous trade?"></textarea>
+        <textarea id="question-3" placeholder="What's your opinion on how the trade played out?"></textarea>
         <button id="submit-entry">Submit Entry</button>
         <button id="delete-selected">Delete Selected Entries</button>
         <button id="submit-selected">Download Selected Entries</button>
@@ -33,17 +45,46 @@
         updateTime();
 
         document.getElementById('submit-entry').addEventListener('click', function() {
-            var entry = document.getElementById('journal-entry').value;
-            var currentTime = new Date().toLocaleString();
-            var fullEntry = currentTime + ' - ' + entry;
+            var symbolName = document.getElementById('symbol-name').value;
+            var entryTime = document.getElementById('entry-time').value;
+            var exitTime = document.getElementById('exit-time').value;
+            var entryPrice = parseFloat(document.getElementById('entry-price').value);
+            var exitPrice = parseFloat(document.getElementById('exit-price').value);
+            var side = document.getElementById('side').value;
+            var question1 = document.getElementById('question-1').value;
+            var question2 = document.getElementById('question-2').value;
+            var question3 = document.getElementById('question-3').value;
+
+            var profitLoss = side === 'long' ? exitPrice - entryPrice : entryPrice - exitPrice;
+
+            var fullEntry = {
+                symbolName: symbolName,
+                entryTime: entryTime,
+                exitTime: exitTime,
+                entryPrice: entryPrice,
+                exitPrice: exitPrice,
+                side: side,
+                question1: question1,
+                question2: question2,
+                question3: question3,
+                profitLoss: profitLoss
+            };
 
             // Save to local storage
             var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
             entries.push(fullEntry);
             localStorage.setItem('journalEntries', JSON.stringify(entries));
 
-            // Clear the textarea
-            document.getElementById('journal-entry').value = '';
+            // Clear the input fields
+            document.getElementById('symbol-name').value = '';
+            document.getElementById('entry-time').value = '';
+            document.getElementById('exit-time').value = '';
+            document.getElementById('entry-price').value = '';
+            document.getElementById('exit-price').value = '';
+            document.getElementById('side').value = '';
+            document.getElementById('question-1').value = '';
+            document.getElementById('question-2').value = '';
+            document.getElementById('question-3').value = '';
 
             // Display entries
             displayEntries();
