@@ -133,19 +133,25 @@
         }
 
         function displayEntries() {
-            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-            var entriesHtml = entries.map(function(entry, index) {
-                return '<div class="entry"><input type="checkbox" id="entry-' + index + '"><label for="entry-' + index + '">' + entry + '</label></div>';
-            }).join('');
-            document.getElementById('past-entries').innerHTML = entriesHtml;
+    var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+    var entriesHtml = entries.map(function(entry, index) {
+        // Formatting the entry into a readable string
+        var entryText = `
+            Symbol: ${entry.symbolName} <br>
+            Entry Time: ${entry.entryTime} <br>
+            Exit Time: ${entry.exitTime} <br>
+            Entry Price: ${entry.entryPrice} <br>
+            Exit Price: ${entry.exitPrice} <br>
+            Side: ${entry.side} <br>
+            Profit/Loss: ${entry.profitLoss.toFixed(2)} <br>
+            Feelings: ${entry.question1} <br>
+            Strategy: ${entry.question2} <br>
+            Opinion: ${entry.question3} <br>
+        `;
 
-            // Add event listener to select all entries
-            document.getElementById('select-all').addEventListener('click', function() {
-                var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
-                checkboxes.forEach(function(checkbox) {
-                    checkbox.checked = true;
-                });
-            });
+        return '<div class="entry"><input type="checkbox" id="entry-' + index + '"><label for="entry-' + index + '">' + entryText + '</label></div>';
+    }).join('');
+    document.getElementById('past-entries').innerHTML = entriesHtml;
         }
         
         // Load entries on page load
