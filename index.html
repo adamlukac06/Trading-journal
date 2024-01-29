@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Journal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="journal-container">
+        <div id="local-time" style="text-align: center;"></div>
+        <textarea id="journal-entry" placeholder="What's on your mind today?"></textarea>
+        <button id="submit-entry">Submit Entry</button>
+        <button id="delete-selected">Delete Selected Entries</button>
+        <button id="submit-selected">Download Selected Entries</button>
+        <button id="select-all">Select All</button>
+        <div id="past-entries">
+            <!-- Past entries will be shown here -->
+        </div>
+    </div>
+
+    <script>
+        // Function to update time
+        function updateTime() {
+            var currentTime = new Date().toLocaleString();
+            document.getElementById('local-time').textContent = currentTime;
+        }
+
+        // Update time every second
+        setInterval(updateTime, 1000);
+
+        // Call updateTime once to display the time immediately
+        updateTime();
+
+        document.getElementById('submit-entry').addEventListener('click', function() {
+            var entry = document.getElementById('journal-entry').value;
+            var currentTime = new Date().toLocaleString();
+            var fullEntry = currentTime + ' - ' + entry;
+
+            // Save to local storage
+            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+            entries.push(fullEntry);
+            localStorage.setItem('journalEntries', JSON.stringify(entries));
+
+            // Clear the textarea
+            document.getElementById('journal-entry').value = '';
+
+            // Display entries
+            displayEntries();
+        });
+
+        // Add event listener to delete selected entries
+        document.getElementById('delete-selected').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+            var newEntries = entries.filter(function(entry, index) {
+                return !checkboxes[index].checked;
+            });
+            localStorage.setItem('journalEntries', JSON.stringify(newEntries));
+            displayEntries();
+        });
+
+        // Add event listener to retrieve selected entries
+        document.getElementById('submit-selected').addEventListener('click', function() {
+            var selectedEntries = [];
+            var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox, index) {
+                if (checkbox.checked) {
+                    selectedEntries.push(checkbox.nextElementSibling.textContent);
+                }
+            });
+            downloadSelectedEntries(selectedEntries.join('\n'), 'selected_entries.txt');
+        });
+
+        // Add event listener to select all entries
+        document.getElementById('select-all').addEventListener('click', function() {
+            var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+            checkboxes.forEach(function(checkbox) {
+                checkbox.checked = true;
+            });
+        });
+
+        // Function to download selected entries
+        function downloadSelectedEntries(data, filename) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
+        function displayEntries() {
+            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+            var entriesHtml = entries.map(function(entry, index) {
+                return '<div class="entry"><input type="checkbox" id="entry-' + index + '"><label for="entry-' + index + '">' + entry + '</label></div>';
+            }).join('');
+            document.getElementById('past-entries').innerHTML = entriesHtml;
+
+            // Add event listener to select all entries
+            document.getElementById('select-all').addEventListener('click', function() {
+                var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = true;
+                });
+            });
+        }
+        
+        // Load entries on page load
+        window.onload = function() {
+            displayEntries();
+            setDailyReminder(); // Call this function when the script loads
+            // ... other code ...
+        };
+
+        function setDailyReminder() {
+            var now = new Date();
+            var nextReminder = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+            var timeout = nextReminder - now;
+            setTimeout(function() {
+                alert("Don't forget to write in your journal!");
+                setDailyReminder(); // Set the next reminder
+            }, timeout);
+        }
+        setDailyReminder();
+    </script>
+</body>
+</html>
