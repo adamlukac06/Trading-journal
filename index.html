@@ -44,87 +44,99 @@
         // Call updateTime once to display the time immediately
         updateTime();
 
-        document.getElementById('submit-entry').addEventListener('click', function() {
-            var symbolName = document.getElementById('symbol-name').value;
-            var entryTime = document.getElementById('entry-time').value;
-            var exitTime = document.getElementById('exit-time').value;
-            var entryPrice = parseFloat(document.getElementById('entry-price').value);
-            var exitPrice = parseFloat(document.getElementById('exit-price').value);
-            var side = document.getElementById('side').value;
-            var question1 = document.getElementById('question-1').value;
-            var question2 = document.getElementById('question-2').value;
-            var question3 = document.getElementById('question-3').value;
+        var submitEntryElement = document.getElementById('submit-entry');
+        if (submitEntryElement) {
+            submitEntryElement.addEventListener('click', function() {
+                var symbolName = document.getElementById('symbol-name').value;
+                var entryTime = document.getElementById('entry-time').value;
+                var exitTime = document.getElementById('exit-time').value;
+                var entryPrice = parseFloat(document.getElementById('entry-price').value);
+                var exitPrice = parseFloat(document.getElementById('exit-price').value);
+                var side = document.getElementById('side').value;
+                var question1 = document.getElementById('question-1').value;
+                var question2 = document.getElementById('question-2').value;
+                var question3 = document.getElementById('question-3').value;
 
-            var profitLoss = side === 'long' ? exitPrice - entryPrice : entryPrice - exitPrice;
+                var profitLoss = side === 'long' ? exitPrice - entryPrice : entryPrice - exitPrice;
 
-            var fullEntry = {
-                symbolName: symbolName,
-                entryTime: entryTime,
-                exitTime: exitTime,
-                entryPrice: entryPrice,
-                exitPrice: exitPrice,
-                side: side,
-                question1: question1,
-                question2: question2,
-                question3: question3,
-                profitLoss: profitLoss
-            };
+                var fullEntry = {
+                    symbolName: symbolName,
+                    entryTime: entryTime,
+                    exitTime: exitTime,
+                    entryPrice: entryPrice,
+                    exitPrice: exitPrice,
+                    side: side,
+                    question1: question1,
+                    question2: question2,
+                    question3: question3,
+                    profitLoss: profitLoss
+                };
 
-            // Save to local storage
-            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-            entries.push(fullEntry);
-            localStorage.setItem('journalEntries', JSON.stringify(entries));
+                // Save to local storage
+                var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+                entries.push(fullEntry);
+                localStorage.setItem('journalEntries', JSON.stringify(entries));
 
-            // Clear the input fields
-            document.getElementById('symbol-name').value = '';
-            document.getElementById('entry-time').value = '';
-            document.getElementById('exit-time').value = '';
-            document.getElementById('entry-price').value = '';
-            document.getElementById('exit-price').value = '';
-            document.getElementById('side').value = '';
-            document.getElementById('question-1').value = '';
-            document.getElementById('question-2').value = '';
-            document.getElementById('question-3').value = '';
+                // Clear the input fields
+                document.getElementById('symbol-name').value = '';
+                document.getElementById('entry-time').value = '';
+                document.getElementById('exit-time').value = '';
+                document.getElementById('entry-price').value = '';
+                document.getElementById('exit-price').value = '';
+                document.getElementById('side').value = '';
+                document.getElementById('question-1').value = '';
+                document.getElementById('question-2').value = '';
+                document.getElementById('question-3').value = '';
 
-            // Display entries
-            displayEntries();
-        });
-
-        // Add event listener to delete selected entries
-        document.getElementById('delete-selected').addEventListener('click', function() {
-            var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
-            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-            var newEntries = entries.filter(function(entry, index) {
-                return !checkboxes[index].checked;
+                // Display entries
+                displayEntries();
             });
-            localStorage.setItem('journalEntries', JSON.stringify(newEntries));
-            displayEntries();
-        });
+        }
 
-        // Add event listener to retrieve selected entries
-        document.getElementById('submit-selected').addEventListener('click', function() {
-            var selectedEntries = [];
-            var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
-            checkboxes.forEach(function(checkbox, index) {
-                if (checkbox.checked) {
-                    selectedEntries.push(checkbox.nextElementSibling.textContent);
-                }
+        var deleteSelectedElement = document.getElementById('delete-selected');
+        if (deleteSelectedElement) {
+            deleteSelectedElement.addEventListener('click', function() {
+                var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+                var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+                var newEntries = entries.filter(function(entry, index) {
+                    return !checkboxes[index].checked;
+                });
+                localStorage.setItem('journalEntries', JSON.stringify(newEntries));
+                displayEntries();
             });
-            downloadSelectedEntries(selectedEntries.join('\n'), 'selected_entries.txt');
-        });
+        }
 
-        // Add event listener to select all entries
-        document.getElementById('select-all').addEventListener('click', function() {
-            var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
-            checkboxes.forEach(function(checkbox) {
-                checkbox.checked = true;
+        var submitSelectedElement = document.getElementById('submit-selected');
+        if (submitSelectedElement) {
+            submitSelectedElement.addEventListener('click', function() {
+                var selectedEntries = [];
+                var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox, index) {
+                    if (checkbox.checked) {
+                        selectedEntries.push(checkbox.nextElementSibling.textContent);
+                    }
+                });
+                downloadSelectedEntries(selectedEntries.join('\n'), 'selected_entries.txt');
             });
-        });
+        }
+
+        var selectAllElement = document.getElementById('select-all');
+        if (selectAllElement) {
+            selectAllElement.addEventListener('click', function() {
+                var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+                checkboxes.forEach(function(checkbox) {
+                    checkbox.checked = true;
+                });
+            });
+        }
 
         // Add event listener to toggle dark mode
-        document.getElementById('toggle-dark-mode').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-        });
+        var toggleDarkModeElement = document.getElementById('toggle-dark-mode');
+        if (toggleDarkModeElement) {
+            toggleDarkModeElement.addEventListener('click', function() {
+                document.body.classList.toggle('dark-mode');
+            });
+        }
 
         // Function to download selected entries
         function downloadSelectedEntries(data, filename) {
@@ -138,25 +150,25 @@
         }
 
         function displayEntries() {
-    var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-    var entriesHtml = entries.map(function(entry, index) {
-        // Formatting the entry into a readable string
-        var entryText = `
-            Symbol: ${entry.symbolName} <br>
-            Entry Time: ${entry.entryTime} <br>
-            Exit Time: ${entry.exitTime} <br>
-            Entry Price: ${entry.entryPrice} <br>
-            Exit Price: ${entry.exitPrice} <br>
-            Side: ${entry.side} <br>
-            Profit/Loss: ${entry.profitLoss.toFixed(2)} <br>
-            Feelings: ${entry.question1} <br>
-            Strategy: ${entry.question2} <br>
-            Opinion: ${entry.question3} <br>
-        `;
+            var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+            var entriesHtml = entries.map(function(entry, index) {
+                // Formatting the entry into a readable string
+                var entryText = `
+                    Symbol: ${entry.symbolName} <br>
+                    Entry Time: ${entry.entryTime} <br>
+                    Exit Time: ${entry.exitTime} <br>
+                    Entry Price: ${entry.entryPrice} <br>
+                    Exit Price: ${entry.exitPrice} <br>
+                    Side: ${entry.side} <br>
+                    Profit/Loss: ${entry.profitLoss ? entry.profitLoss.toFixed(2) : 'N/A'} <br>
+                    Feelings: ${entry.question1} <br>
+                    Strategy: ${entry.question2} <br>
+                    Opinion: ${entry.question3} <br>
+                `;
 
-        return '<div class="entry"><input type="checkbox" id="entry-' + index + '"><label for="entry-' + index + '">' + entryText + '</label></div>';
-    }).join('');
-    document.getElementById('past-entries').innerHTML = entriesHtml;
+                return '<div class="entry"><input type="checkbox" id="entry-' + index + '"><label for="entry-' + index + '">' + entryText + '</label></div>';
+            }).join('');
+            document.getElementById('past-entries').innerHTML = entriesHtml;
         }
         
         // Load entries on page load
