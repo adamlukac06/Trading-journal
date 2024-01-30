@@ -1,18 +1,13 @@
 body {
     font-family: Bahnschrift, sans-serif;
-    background-color: black;
-    color: rgb(255, 43, 255);
+    background-color: #333;
+    color: #fff;
     margin: 0;
     padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
-}
-
-body.dark-mode {
-    background-color: #333;
-    color: #fff;
 }
 
 #logo {
@@ -32,10 +27,17 @@ body.dark-mode {
     padding: 20px;
     background-color: #444;
     border-radius: 8px;
+    border-color: #777;
 }
 
-.dark-mode .journal-container {
-    border-color: #777;
+#journal-entry,
+#submit-entry,
+button,
+input,
+textarea,
+select {
+    background-color: #555;
+    color: #fff;
 }
 
 #journal-entry {
@@ -43,10 +45,8 @@ body.dark-mode {
     height: 150px;
     margin-bottom: 10px;
     padding: 10px;
-    background-color: #555;
     border: none;
     border-radius: 4px;
-    color: white;
     font-size: 16px;
 }
 
@@ -55,8 +55,6 @@ body.dark-mode {
     padding: 10px;
     border: none;
     border-radius: 4px;
-    background-color: #666;
-    color: white;
     font-size: 16px;
     cursor: pointer;
 }
@@ -66,11 +64,4 @@ body.dark-mode {
     padding: 10px;
     background-color: #555;
     border-radius: 4px;
-}
-.dark-mode button, 
-.dark-mode input, 
-.dark-mode textarea, 
-.dark-mode select {
-    background-color: #555;
-    color: #fff;
 }
