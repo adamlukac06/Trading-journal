@@ -7,27 +7,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="journal-container">
-        <img id="logo" src="QCpurpbsee.png" alt="Logo">
-        <div id="local-time" style="text-align: center;"></div>
-        <input type="text" id="symbol-name" placeholder="Symbol Name">
-        <input type="datetime-local" id="entry-time">
-        <input type="datetime-local" id="exit-time">
-        <input type="number" id="entry-price" placeholder="Entry Price">
-        <input type="number" id="exit-price" placeholder="Exit Price">
-        <select id="side">
-            <option value="long">Long</option>
-            <option value="short">Short</option>
-        </select>
-        <textarea id="question-1" placeholder="How did you feel during this trade?"></textarea>
-        <textarea id="question-2" placeholder="What strategy did you use? Did it change from your previous trade?"></textarea>
-        <textarea id="question-3" placeholder="What's your opinion on how the trade played out?"></textarea>
-        <button id="submit-entry">Submit Entry</button>
-        <button id="delete-selected">Delete Selected Entries</button>
-        <button id="submit-selected">Download Selected Entries</button>
-        <button id="select-all">Select All</button>
-        <div id="past-entries">
-            <!-- Past entries will be shown here -->
+    <div class="main-container">
+        <h1>QC Trading Journal</h1>
+        <div class="journal-container">
+            <img id="logo" src="QCpurpbsee.png" alt="Logo">
+            <form id="journal-form">
+                <div id="local-time" style="text-align: center;"></div>
+                <input type="text" id="symbol-name" placeholder="Symbol Name" required>
+                <input type="datetime-local" id="entry-time" required>
+                <input type="datetime-local" id="exit-time" required>
+                <input type="number" id="entry-price" placeholder="Entry Price" required>
+                <input type="number" id="exit-price" placeholder="Exit Price" required>
+                <select id="side" required>
+                    <option value="long">Long</option>
+                    <option value="short">Short</option>
+                </select>
+                <textarea id="question-1" placeholder="How did you feel during this trade?" required></textarea>
+                <textarea id="question-2" placeholder="What strategy did you use? Did it change from your previous trade?" required></textarea>
+                <textarea id="question-3" placeholder="What's your opinion on how the trade played out?" required></textarea>
+                <button id="submit-entry">Submit Entry</button>
+                <button id="delete-selected">Delete Selected Entries</button>
+                <button id="submit-selected">Download Selected Entries</button>
+                <button id="select-all">Select All</button>
+            </form>
+            <div id="past-entries">
+                <!-- Past entries will be shown here -->
+            </div>
         </div>
     </div>
 
@@ -44,9 +49,34 @@
         // Call updateTime once to display the time immediately
         updateTime();
 
+        // Function to get today's date in the format YYYY-MM-DD
+        function getTodayDate() {
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var yyyy = today.getFullYear();
+
+            return yyyy + '-' + mm + '-' + dd;
+        }
+
+        // Set the value and max of the date fields to today's date
+        var todayDate = getTodayDate();
+        document.getElementById('entry-time').value = todayDate;
+        document.getElementById('entry-time').max = todayDate;
+        document.getElementById('exit-time').value = todayDate;
+        document.getElementById('exit-time').max = todayDate;
+
         var submitEntryElement = document.getElementById('submit-entry');
         if (submitEntryElement) {
-            submitEntryElement.addEventListener('click', function() {
+            submitEntryElement.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent form submission
+
+                var form = document.getElementById('journal-form');
+                if (!form.checkValidity()) {
+                    form.reportValidity(); // Trigger the validation message
+                    return; // If the form is not valid, stop here
+                }
+
                 var symbolName = document.getElementById('symbol-name').value;
                 var entryTime = document.getElementById('entry-time').value;
                 var exitTime = document.getElementById('exit-time').value;
