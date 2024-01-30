@@ -10,6 +10,11 @@ body {
     height: 100vh;
 }
 
+body.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
 #logo {
     display: block;
     margin-left: auto;
@@ -27,6 +32,10 @@ body {
     padding: 20px;
     background-color: #444;
     border-radius: 8px;
+}
+
+.dark-mode .journal-container {
+    border-color: #777;
 }
 
 #journal-entry {
@@ -57,4 +66,11 @@ body {
     padding: 10px;
     background-color: #555;
     border-radius: 4px;
+}
+.dark-mode button, 
+.dark-mode input, 
+.dark-mode textarea, 
+.dark-mode select {
+    background-color: #555;
+    color: #fff;
 }
