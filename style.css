@@ -1,7 +1,7 @@
 body {
     font-family: Bahnschrift, sans-serif;
-    background-color: #333;
-    color: #fff;
+    background-color: #00001a;
+    color: #FFFFFF;
     margin: 0;
     padding: 0;
     display: flex;
@@ -25,9 +25,9 @@ body {
     max-width: 600px;
     margin: auto;
     padding: 20px;
-    background-color: #444;
+    background-color: #10113E;
     border-radius: 8px;
-    border-color: #777;
+    border-color: #844DE2;
 }
 
 #journal-entry,
@@ -36,8 +36,8 @@ button,
 input,
 textarea,
 select {
-    background-color: #555;
-    color: #fff;
+    background-color: #10113E;
+    color: #FFFFFF;
 }
 
 #journal-entry {
@@ -57,21 +57,28 @@ select {
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
+    background-color: #844DE2;
+}
+
+#submit-entry:hover {
+    background-color: #904CE3;
 }
 
 .past-entries {
     margin-top: 20px;
     padding: 10px;
-    background-color: #555;
+    background-color: #10113E;
     border-radius: 4px;
 }
 
 h1 {
     text-align: center;
+    color: #CCCCCC;
 }
 
 .main-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #000034;
 }
