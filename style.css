@@ -81,6 +81,14 @@ select {
     border-bottom: 1px solid #844DE2;
 }
 
+.entries-table th {
+    background-color: #202040;
+    color: #844DE2; /* Change the text color to purple */
+    padding: 15px; /* Increase the padding to make the header higher */
+    text-align: left;
+    border-bottom: 2px solid #844DE2;
+}
+
 .entry-row {
     border: 1px solid #844DE2;
 }
@@ -144,4 +152,8 @@ h1 {
 
 .loss {
     color: red;
+}
+
+#past-entries {
+    margin-top: 20px; /* Adjust this value as needed */
 }
