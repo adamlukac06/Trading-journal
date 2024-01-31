@@ -29,6 +29,7 @@
                 <button id="delete-selected">Delete Selected Entries</button>
                 <button id="submit-selected">Download Selected Entries</button>
                 <button id="select-all">Select All</button>
+                <button id="submit-all">Download All Entries</button>
             </form>
             <div id="past-entries">
                 <!-- Past entries will be shown here -->
@@ -49,27 +50,34 @@
         // Call updateTime once to display the time immediately
         updateTime();
 
-        // Function to get today's date in the format YYYY-MM-DD
-        function getTodayDate() {
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-            var yyyy = today.getFullYear();
+        // Function to get the current date and time in the format YYYY-MM-DDTHH:MM
+        function getCurrentDateTime() {
+            var now = new Date();
+            var year = now.getFullYear();
+            var month = String(now.getMonth() + 1).padStart(2, '0'); //January is 0!
+            var day = String(now.getDate()).padStart(2, '0');
+            var hours = String(now.getHours()).padStart(2, '0');
+            var minutes = String(now.getMinutes()).padStart(2, '0');
 
-            return yyyy + '-' + mm + '-' + dd;
+            return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
         }
 
-        // Set the value and max of the date fields to today's date
-        var todayDate = getTodayDate();
-        document.getElementById('entry-time').value = todayDate;
-        document.getElementById('entry-time').max = todayDate;
-        document.getElementById('exit-time').value = todayDate;
-        document.getElementById('exit-time').max = todayDate;
+        // Set the value and max of the date fields to the current date and time
+        var currentDateTime = getCurrentDateTime();
+        document.getElementById('entry-time').value = currentDateTime;
+        document.getElementById('entry-time').max = currentDateTime;
+        document.getElementById('exit-time').value = currentDateTime;
+        document.getElementById('exit-time').max = currentDateTime;
 
         var submitEntryElement = document.getElementById('submit-entry');
         if (submitEntryElement) {
             submitEntryElement.addEventListener('click', function(event) {
                 event.preventDefault(); // Prevent form submission
+
+                // Update the current time value
+                var currentDateTime = getCurrentDateTime();
+                document.getElementById('entry-time').max = currentDateTime;
+                document.getElementById('exit-time').max = currentDateTime;
 
                 var form = document.getElementById('journal-form');
                 if (!form.checkValidity()) {
@@ -77,9 +85,25 @@
                     return; // If the form is not valid, stop here
                 }
 
-                var symbolName = document.getElementById('symbol-name').value;
                 var entryTime = document.getElementById('entry-time').value;
                 var exitTime = document.getElementById('exit-time').value;
+
+                // Check if entry or exit time is in the future
+                var now = new Date();
+                var entryDateTime = new Date(entryTime);
+                var exitDateTime = new Date(exitTime);
+                if (entryDateTime > now || exitDateTime > now) {
+                    alert("Entry or exit time cannot be in the future.");
+                    return;
+                }
+
+                // Check if exit time is sooner than entry time
+                if (exitDateTime < entryDateTime) {
+                    alert("Exit time cannot be sooner than entry time.");
+                    return;
+                }
+
+                var symbolName = document.getElementById('symbol-name').value;
                 var entryPrice = parseFloat(document.getElementById('entry-price').value);
                 var exitPrice = parseFloat(document.getElementById('exit-price').value);
                 var side = document.getElementById('side').value;
@@ -150,6 +174,25 @@
             });
         }
 
+        var submitAllElement = document.getElementById('submit-all');
+        if (submitAllElement) {
+            submitAllElement.addEventListener('click', function() {
+                var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+                var entriesText = entries.map(JSON.stringify).join('\n');
+                downloadEntries(entriesText, 'all_entries.txt');
+            });
+        }
+
+        function downloadEntries(data, filename) {
+            var element = document.createElement('a');
+            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+            element.setAttribute('download', filename);
+            element.style.display = 'none';
+            document.body.appendChild(element);
+            element.click();
+            document.body.removeChild(element);
+        }
+
         var selectAllElement = document.getElementById('select-all');
         if (selectAllElement) {
             selectAllElement.addEventListener('click', function() {
@@ -168,20 +211,10 @@
             });
         }
 
-        // Function to download selected entries
-        function downloadSelectedEntries(data, filename) {
-            var element = document.createElement('a');
-            element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
-            element.setAttribute('download', filename);
-            element.style.display = 'none';
-            document.body.appendChild(element);
-            element.click();
-            document.body.removeChild(element);
-        }
-
         function displayEntries() {
             var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-            var entriesHtml = entries.map(function(entry, index) {
+            var lastThreeEntries = entries.slice(-3); // Get the last 3 entries
+            var entriesHtml = lastThreeEntries.map(function(entry, index) {
                 // Formatting the entry into a readable string
                 var entryText = `
                     Symbol: ${entry.symbolName} <br>
