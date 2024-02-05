@@ -33,6 +33,7 @@ var submitEntryElement = document.getElementById('submit-entry');
 if (submitEntryElement) {
     submitEntryElement.addEventListener('click', function(event) {
         event.preventDefault(); // Prevent form submission
+        event.stopPropagation(); // Stop event propagation
 
         // Update the current time value
         var currentDateTime = getCurrentDateTime();
@@ -110,27 +111,35 @@ if (submitEntryElement) {
 var deleteSelectedElement = document.getElementById('delete-selected');
 if (deleteSelectedElement) {
     deleteSelectedElement.addEventListener('click', function() {
-        var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+        // event.preventDefault(); // Prevent form submission
+        // event.stopPropagation(); // Stop event propagation
+
+        var checkboxes = document.querySelectorAll('.entry-checkbox');
         var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
         var newEntries = entries.filter(function(entry, index) {
-            return !checkboxes[index].checked;
+             if (index < checkboxes.length) {
+                 return !checkboxes[index].checked;
+             }
         });
         localStorage.setItem('journalEntries', JSON.stringify(newEntries));
         displayEntries();
+        
     });
 }
 
 var submitSelectedElement = document.getElementById('submit-selected');
 if (submitSelectedElement) {
-    submitSelectedElement.addEventListener('click', function() {
-        var selectedEntries = [];
-        var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
-        checkboxes.forEach(function(checkbox, index) {
-            if (checkbox.checked) {
-                selectedEntries.push(checkbox.nextElementSibling.textContent);
-            }
+    submitSelectedElement.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent form submission
+        event.stopPropagation(); // Stop event propagation
+
+        var checkboxes = document.querySelectorAll('.entry-checkbox');
+        var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
+        var selectedEntries = entries.filter(function(entry, index) {
+            return checkboxes[index].checked;
         });
-        downloadSelectedEntries(selectedEntries.join('\n'), 'selected_entries.txt');
+        var selectedEntriesText = selectedEntries.map(JSON.stringify).join('\n');
+        downloadSelectedEntries(selectedEntriesText, 'selected_entries.txt');
     });
 }
 
@@ -153,10 +162,22 @@ function downloadEntries(data, filename) {
     document.body.removeChild(element);
 }
 
+function downloadSelectedEntries(data, filename) {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+    element.setAttribute('download', filename);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
 var selectAllElement = document.getElementById('select-all');
 if (selectAllElement) {
-    selectAllElement.addEventListener('click', function() {
-        var checkboxes = document.querySelectorAll('.entry input[type="checkbox"]');
+    selectAllElement.addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent any form submission
+
+        var checkboxes = document.querySelectorAll('.entry-checkbox');
         checkboxes.forEach(function(checkbox) {
             checkbox.checked = true;
         });
@@ -173,7 +194,6 @@ if (toggleDarkModeElement) {
 
 function displayEntries() {
     var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
-    var lastThreeEntries = entries.slice(-3); // Get the last 3 entries
 
     // Add table header
     var entriesHtml = `
@@ -192,11 +212,11 @@ function displayEntries() {
         </tr>
     `;
 
-    entriesHtml += lastThreeEntries.map(function(entry, index) {
+    entriesHtml += entries.map(function(entry, index) {
         // Formatting the entry into a table row
         var entryRow = `
             <tr>
-                <td><input type="checkbox" id="entry-${index}"></td>
+                <td><input type="checkbox" class="entry-checkbox" id="entry-${index}"></td>
                 <td>${entry.symbolName}</td>
                 <td>${entry.entryTime}</td>
                 <td>${entry.exitTime}</td>
