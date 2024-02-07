@@ -12,6 +12,7 @@ body {
 
 #logo {
     display: block;
+   margin-top: -40px;
     margin-left: auto;
     margin-right: auto;
     width: 200px;
@@ -83,8 +84,8 @@ select {
 
 .entries-table th {
     background-color: #202040;
-    color: #844DE2; /* Change the text color to purple */
-    padding: 15px; /* Increase the padding to make the header higher */
+    color: #844DE2; 
+    padding: 15px; 
     text-align: left;
     border-bottom: 2px solid #844DE2;
 }
@@ -97,8 +98,8 @@ select {
     padding: 10px;
     background-color: #10113E;
     color: #FFFFFF;
-    text-align: left; /* Align the text to the left */
-    border-bottom: 1px solid #844DE2; /* Add a bottom border to each cell */
+    text-align: left; 
+    border-bottom: 1px solid #844DE2;
 }
 
 .entry-data .label {
@@ -156,4 +157,59 @@ h1 {
 
 #past-entries {
     margin-top: 20px; /* Adjust this value as needed */
+}
+
+/* General form styling */
+form {
+    background-color: #10113E;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for input fields and select boxes */
+input[type="text"], input[type="number"], input[type="date"], select {
+    width: 49%;
+    padding: 10px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+/* Style for checkboxes */
+input[type="checkbox"] {
+    margin-top: 15px;
+}
+
+/* Style for buttons */
+button {
+    width: 23%;
+    
+    background-color: #844DE2;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #844DE2;
+}
+
+.questions-container {
+    display: flex;
+    justify-content: space-between; 
+    width: 100%; 
+    padding: 10px; 
+}
+
+.questions-container input[type="text"] {
+    width: 50%;
+    padding: 10px; 
+    margin: 0 1%; 
+    box-sizing: border-box; 
 }

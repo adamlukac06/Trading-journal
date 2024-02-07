@@ -195,7 +195,6 @@ if (toggleDarkModeElement) {
 function displayEntries() {
     var entries = JSON.parse(localStorage.getItem('journalEntries')) || [];
 
-    // Add table header
     var entriesHtml = `
         <tr>
             <th>Select</th>
@@ -213,17 +212,17 @@ function displayEntries() {
     `;
 
     entriesHtml += entries.map(function(entry, index) {
-        // Formatting the entry into a table row
+        var profitLossColor = entry.profitLoss >= 0 ? 'green' : 'red';
         var entryRow = `
             <tr>
                 <td><input type="checkbox" class="entry-checkbox" id="entry-${index}"></td>
                 <td>${entry.symbolName}</td>
                 <td>${entry.entryTime}</td>
                 <td>${entry.exitTime}</td>
-                <td>${entry.entryPrice}</td>
-                <td>${entry.exitPrice}</td>
+                <td>$${entry.entryPrice}</td>
+                <td>$${entry.exitPrice}</td>
                 <td>${entry.side}</td>
-                <td>${entry.profitLoss ? entry.profitLoss.toFixed(2) : 'N/A'}</td>
+                <td style="color: ${profitLossColor};">${entry.profitLoss ? '$' + entry.profitLoss.toFixed(2) : 'N/A'}</td>
                 <td>${entry.question1}</td>
                 <td>${entry.question2}</td>
                 <td>${entry.question3}</td>
